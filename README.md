@@ -47,7 +47,7 @@ https://gitlab.in2p3.fr/Mathias.Rouan/docker-managechart
 ## Pre-requisites
 
 - PHP >= 8.2 (compatible with PHP 8.5), with the `ctype`, `iconv` extensions and the extension matching your database (`pdo_pgsql`/`pgsql` or `pdo_mysql`/`mysqli`)
-- yarn or npm
+- Node.js >= 22 (Node 24 LTS recommended) and npm. No `NODE_OPTIONS=--openssl-legacy-provider` is needed
 - [composer](https://getcomposer.org/download/)
 - the [symfony cli](https://symfony.com/download)
 
@@ -60,7 +60,7 @@ $ composer install
 ## Installing javascript dependencies
 
 ```
-$ yarn install
+$ npm install
 ```
 
 ## Creating javascript bundles
@@ -68,13 +68,13 @@ $ yarn install
 For development run
 
 ```
-$ yarn run dev
+$ npm run dev
 ```
 
 For production run
 
 ```
-$ yarn run build
+$ npm run build
 ```
 
 ## Setting up the database
