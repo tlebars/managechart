@@ -46,7 +46,7 @@ https://gitlab.in2p3.fr/Mathias.Rouan/docker-managechart
 ## Manual install
 ## Pre-requisites
 
-- PHP >= 7.2.5
+- PHP >= 8.2 (compatible with PHP 8.5), with the `ctype`, `iconv` extensions and the extension matching your database (`pdo_pgsql`/`pgsql` or `pdo_mysql`/`mysqli`)
 - yarn or npm
 - [composer](https://getcomposer.org/download/)
 - the [symfony cli](https://symfony.com/download)
@@ -91,3 +91,27 @@ php bin/console doctrine:migrations:migrate
 ```
 $ symfony server:start
 ```
+
+# Upgrade notes (Symfony 7.4 LTS / PHP 8.5)
+
+The application now runs on **Symfony 7.4 LTS** and **PHP >= 8.2** (tested up to PHP 8.5).
+
+- Annotations (`@ORM\*`, `@Assert\*`, `@Route`, `@IsGranted`) were replaced by PHP 8 attributes;
+  `doctrine/annotations` and `sensio/framework-extra-bundle` were removed.
+- Entities are loaded from controllers with `#[MapEntity]`.
+- Doctrine ORM 3 / DBAL 4 are used (lazy ghost objects instead of `symfony/proxy-manager-bridge`).
+- Security uses `password_hashers` and the authenticator system (`App\Security\LoginFormAuthenticator`).
+- Tests run with PHPUnit (`vendor/bin/phpunit`) instead of `symfony/phpunit-bridge`.
+
+After pulling this version:
+
+```
+$ composer install
+$ php bin/console cache:clear
+$ php bin/console doctrine:schema:validate
+$ php bin/console doctrine:migrations:migrate
+```
+
+Remaining manual steps: review `composer recipes` (`composer recipes:update`) for any recipe you customised,
+and check that your database still validates with `doctrine:schema:validate` (ORM 3 / DBAL 4 may report
+type/default differences that need a migration).

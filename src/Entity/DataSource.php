@@ -7,96 +7,48 @@ use Symfony\Component\Validator\Constraints as Assert;
 use App\Bdd\Controller\Bdd;
 use App\Controller\EncryptController;
 
-/**
- * DataSource
- *
- * @ORM\Table(name="data_source")
- * @ORM\Entity(repositoryClass="App\Repository\DataSourceRepository")
- */
+#[ORM\Table(name: 'data_source')]
+#[ORM\Entity(repositoryClass: \App\Repository\DataSourceRepository::class)]
 class DataSource
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nameBDD", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'nameBDD', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $nameBDD;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="descriptionBDD", type="text")
-     */
+    #[ORM\Column(name: 'descriptionBDD', type: 'text')]
     private $descriptionBDD;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="hostBDD", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'hostBDD', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $hostBDD;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="portBDD", type="integer")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'portBDD', type: 'integer')]
+    #[Assert\NotBlank()]
     private $portBDD;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="loginBDD", type="string", length=1024)
-     */
+    #[ORM\Column(name: 'loginBDD', type: 'string', length: 1024)]
     private $loginBDD;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="passwordBDD", type="string", length=1024)
-     */
+    #[ORM\Column(name: 'passwordBDD', type: 'string', length: 1024)]
     private $passwordBDD;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="typeBDD", type="integer")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'typeBDD', type: 'integer')]
+    #[Assert\NotBlank()]
     private $typeBDD;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="typeStrBDD", type="string", length=255)
-     */
+    #[ORM\Column(name: 'typeStrBDD', type: 'string', length: 255)]
     private $typeStrBDD;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="dateBDD", type="datetime")
-     * @Assert\Type("\DateTimeInterface")
-     */
+    #[ORM\Column(name: 'dateBDD', type: 'datetime')]
+    #[Assert\Type('\DateTimeInterface')]
     private $dateBDD;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nameCon", type="string", length=255)
-     */
+    #[ORM\Column(name: 'nameCon', type: 'string', length: 255)]
     private $nameCon;
 
 

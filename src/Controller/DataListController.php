@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -14,19 +16,19 @@ use App\Form\DataListType;
 
 class DataListController extends AbstractController
 {
-    /**
-     * @isGranted("ROLE_SCIENTIFIC_PLUS")
-     */
+    public function __construct(private ManagerRegistry $doctrine)
+    {
+    }
+
+    #[IsGranted('ROLE_SCIENTIFIC_PLUS')]
     public function index() {
-        $repository = $this->getDoctrine()->getRepository(DataList::class);
+        $repository = $this->doctrine->getRepository(DataList::class);
         $list_dataList = $repository->findAll();
 
         return $this->render('data_list/index.html.twig', array('list_dataList' =>$list_dataList));
     }
 
-    /**
-     * @isGranted("ROLE_SCIENTIFIC_PLUS")
-     */
+    #[IsGranted('ROLE_SCIENTIFIC_PLUS')]
     public function new(Request $request, TranslatorInterface $translator) {
         $dataList = new DataList();
         $form = $this->createForm(DataListType::class, $dataList);
@@ -40,7 +42,7 @@ class DataListController extends AbstractController
                 $attributsSpatiaux = $dataList->getAttributsSpatiaux()->toArray();
                 $dataList->getAttributsSpatiaux()->clear();
 
-                $em = $this->getDoctrine()->getManager();
+                $em = $this->doctrine->getManager();
                 $em->persist($dataList);
                 $em->flush();
 
@@ -78,7 +80,7 @@ class DataListController extends AbstractController
      * Retourne un DataList pour test
      */
     protected function getDataList($idDatasource, $request, $attributsSpatiaux, $test) {
-        $repository = $this->getDoctrine()->getRepository(DataSource::class);
+        $repository = $this->doctrine->getRepository(DataSource::class);
 
         $dataSource = $repository->find($idDatasource);
 
@@ -100,9 +102,7 @@ class DataListController extends AbstractController
         return $dataList;
     }
 
-    /**
-     * @isGranted("ROLE_SCIENTIFIC_PLUS")
-     */
+    #[IsGranted('ROLE_SCIENTIFIC_PLUS')]
     public function queryBrut(TranslatorInterface $translator) {
         $idDatasource = $_POST['dataSource'];
         $request = $_POST['request'];
@@ -149,31 +149,25 @@ class DataListController extends AbstractController
         return new Response($html);
     }
 
-    /**
-     * @isGranted("ROLE_SCIENTIFIC_PLUS")
-     */
-    public function confirmed(DataList $dataList) {
+    #[IsGranted('ROLE_SCIENTIFIC_PLUS')]
+    public function confirmed(#[MapEntity] DataList $dataList) {
         return $this->render('data_list/confirmed.html.twig', array('dataList' => $dataList));
     }
 
-    /**
-     * @isGranted("ROLE_SCIENTIFIC_PLUS")
-     */
-    public function delete(DataList $dataList) {
-        $em = $this->getDoctrine()->getManager();
+    #[IsGranted('ROLE_SCIENTIFIC_PLUS')]
+    public function delete(#[MapEntity] DataList $dataList) {
+        $em = $this->doctrine->getManager();
         $em->remove($dataList);
         $em->flush();
 
         return $this->redirect($this->generateUrl('data_list_list'));
     }
 
-    /**
-     * @isGranted("ROLE_SCIENTIFIC_PLUS")
-     */
-    public function edit(Request $request, TranslatorInterface $translator,  DataList $dataList) {
+    #[IsGranted('ROLE_SCIENTIFIC_PLUS')]
+    public function edit(Request $request, TranslatorInterface $translator,  #[MapEntity] DataList $dataList) {
         $attributsSpatiaux = $dataList->getAttributsSpatiaux()->toArray();//array_reverse($dataList->getAttributsSpatiaux()->toArray());
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         foreach ($dataList->getAttributsSpatiaux()->toArray() as $attributSpatial) {
             $em->remove($attributSpatial);
         }
@@ -221,19 +215,15 @@ class DataListController extends AbstractController
         ));
     }
 
-    /**
-     * @isGranted("ROLE_SCIENTIFIC_PLUS")
-     */
-    public function show(DataList $dataList) {
+    #[IsGranted('ROLE_SCIENTIFIC_PLUS')]
+    public function show(#[MapEntity] DataList $dataList) {
         return $this->render('data_list/show.html.twig', array('dataList' => $dataList));
     }
 
-    /**
-     * @isGranted("ROLE_SCIENTIFIC_PLUS")
-     */
-    public function duplicate(DataList $dataList) {
+    #[IsGranted('ROLE_SCIENTIFIC_PLUS')]
+    public function duplicate(#[MapEntity] DataList $dataList) {
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         // Duplication de la requête
         $duplicatedDataList = clone $dataList;

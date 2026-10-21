@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints\Email;
 
 class RegistrationFormType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options) 
+	public function buildForm(FormBuilderInterface $builder, array $options): void 
 	{
 		$builder
 			->add('username', TextType::class, [
@@ -56,7 +56,7 @@ class RegistrationFormType extends AbstractType
 	}
 	
 	
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
@@ -67,7 +67,7 @@ class RegistrationFormType extends AbstractType
         ]);
     }
 	
-	public function getBlockPrefix() {
+	public function getBlockPrefix(): string {
 		return 'mc_user_registration';
 	}
 }

@@ -5,82 +5,44 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * YAxis
- *
- * @ORM\Table(name="y_axis")
- * @ORM\Entity(repositoryClass="App\Repository\YAxisRepository")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Table(name: 'y_axis')]
+#[ORM\Entity(repositoryClass: \App\Repository\YAxisRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class YAxis
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="titleYAxis", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'titleYAxis', type: 'string', length: 255, nullable: true)]
     private $titleYAxis;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="typeYAxis", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'typeYAxis', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $typeYAxis;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Flag", mappedBy="yAxis", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToMany(targetEntity: \App\Entity\Flag::class, mappedBy: 'yAxis', cascade: ['persist', 'remove'])]
     private $flag;
     
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Series", mappedBy="yAxis", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToMany(targetEntity: \App\Entity\Series::class, mappedBy: 'yAxis', cascade: ['persist', 'remove'])]
     private $series;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Chart", inversedBy="list_yAxis")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank()
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Chart::class, inversedBy: 'list_yAxis')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank()]
     private $chart;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="top", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'top', type: 'string', length: 255, nullable: true)]
     private $top;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="height", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'height', type: 'string', length: 255, nullable: true)]
     private $height;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="opposite", type="boolean", options={"default": false})
-     */
+    #[ORM\Column(name: 'opposite', type: 'boolean', options: ['default' => false])]
     private $opposite;
     
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="orderY", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'orderY', type: 'integer', nullable: true)]
     private $orderY; 
 
 

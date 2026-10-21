@@ -18,7 +18,7 @@ class YAxisType extends AbstractType
 	 * @param FormBuilderInterface $builder
      * @param array $options
 	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		$builder
 			->add('titleYAxis', TextType::class, array(
 				'label' => 'formYAxis.title',
@@ -67,7 +67,7 @@ class YAxisType extends AbstractType
 	/**
      * @param OptionsResolver $resolver
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver): void {
         $resolver->setDefaults(array(
         	'data_class' => YAxis::class,
         	'allow_extra_fields' => true
@@ -77,7 +77,7 @@ class YAxisType extends AbstractType
     /**
      * @return string
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix(): string {
         return 'mc_chartbundle_yaxis';
     }
 }

@@ -7,7 +7,7 @@ use Twig\TwigFilter;
 
 class ArrayShuffleExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('shuffle', [$this, 'shuffleArray']),

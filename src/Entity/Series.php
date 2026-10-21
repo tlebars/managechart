@@ -5,116 +5,60 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Series
- *
- * @ORM\Table(name="series")
- * @ORM\Entity(repositoryClass="App\Repository\SeriesRepository")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Table(name: 'series')]
+#[ORM\Entity(repositoryClass: \App\Repository\SeriesRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Series
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="titleSerie", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'titleSerie', type: 'string', length: 255, nullable: true)]
     private $titleSerie;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="unitSerie", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'unitSerie', type: 'string', length: 255, nullable: true)]
     private $unitSerie;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="typeSerie", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'typeSerie', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $typeSerie;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="colorSerie", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'colorSerie', type: 'string', length: 255, nullable: true)]
     private $colorSerie;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="markerSerie", type="boolean")
-     */
+    #[ORM\Column(name: 'markerSerie', type: 'boolean')]
     private $markerSerie;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="dashStyleSerie", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'dashStyleSerie', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $dashStyleSerie;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="parameterDataList", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'parameterDataList', type: 'string', length: 255, nullable: true)]
     private $parameterDataList;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\YAxis", inversedBy="series")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank()
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\YAxis::class, inversedBy: 'series')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank()]
     private $yAxis;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\DataList", inversedBy="series")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank()
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\DataList::class, inversedBy: 'series')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank()]
     private $dataList;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="yaxisOrder", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'yaxisOrder', type: 'integer', nullable: true)]
     private $yaxisOrder;    
 
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="size", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'size', type: 'string', length: 255, nullable: true)]
     private $size;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="innersize", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'innersize', type: 'string', length: 255, nullable: true)]
     private $innersize;
 
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="colsize", type="float", nullable=true, options={"default": 1.00})
-     */
+    #[ORM\Column(name: 'colsize', type: 'float', nullable: true, options: ['default' => 1.00])]
     private $colsize;
 
 

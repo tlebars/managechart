@@ -19,7 +19,7 @@ class DataSourceType extends AbstractType
 	 * @param FormBuilderInterface $builder
 	 * @param array $options
 	 */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		$builder
 			->add('nameBDD',		TextType::class,				array(
 				'label' => 'formDataSource.name'
@@ -59,7 +59,7 @@ class DataSourceType extends AbstractType
 	/**
 	 * @return string
 	 */
-	public function getBlockPrefix() {
+	public function getBlockPrefix(): string {
 		return 'mc_datasourcesbundle_datasource';
 	}
 }

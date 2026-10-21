@@ -5,93 +5,49 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Flag
- *
- * @ORM\Table(name="flag")
- * @ORM\Entity(repositoryClass="App\Repository\FlagRepository")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Table(name: 'flag')]
+#[ORM\Entity(repositoryClass: \App\Repository\FlagRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Flag
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\DataList", inversedBy="flag")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank()
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\DataList::class, inversedBy: 'flag')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank()]
     private $dataList;
 
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="parameterDataList", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'parameterDataList', type: 'string', length: 255, nullable: true)]
     private $parameterDataList;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="onseries", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'onseries', type: 'string', length: 255, nullable: true)]
     private $onseries;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="titleFlag", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'titleFlag', type: 'string', length: 255, nullable: true)]
     private $titleFlag;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="shapeflag", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: 'shapeflag', type: 'string', length: 255, nullable: false)]
     private $shapeflag;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="colorflag", type="string", length=255, nullable=false)
-     */
+    #[ORM\Column(name: 'colorflag', type: 'string', length: 255, nullable: false)]
     private $colorflag;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="widthflag", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'widthflag', type: 'string', length: 255, nullable: true)]
     private $widthflag;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="styleflag", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'styleflag', type: 'string', length: 255, nullable: true)]
     private $styleflag;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\YAxis", inversedBy="flag")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank()
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\YAxis::class, inversedBy: 'flag')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank()]
     private $yAxis;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="yaxisOrder", type="integer", nullable=true)
-     */
+    #[ORM\Column(name: 'yaxisOrder', type: 'integer', nullable: true)]
     private $yaxisOrder;
 
     /**

@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -14,12 +16,14 @@ use App\Controller\EncryptController;
 
 class DataSourcesController extends AbstractController
 {
-    /**
-     * @isGranted("ROLE_ADMIN")
-     */
+    public function __construct(private ManagerRegistry $doctrine)
+    {
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
     public function index()
     {
-        $repository = $this->getDoctrine()->getRepository(DataSource::class);
+        $repository = $this->doctrine->getRepository(DataSource::class);
         $list_dataSources = $repository->findAll();
 
         // On vérifie si la clé de chiffrement existe
@@ -34,9 +38,7 @@ class DataSourcesController extends AbstractController
         ));
     }
 
-    /**
-     * @isGranted("ROLE_ADMIN")
-     */
+    #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request, TranslatorInterface $translator)
     {
         $dataSource = new DataSource;
@@ -57,7 +59,7 @@ class DataSourcesController extends AbstractController
                 $dataSource->setLoginBDD(EncryptController::chiffrer($dataSource->getLoginBDD()));
                 $dataSource->setPasswordBDD(EncryptController::chiffrer($dataSource->getPasswordBDD()));
 
-                $em = $this->getDoctrine()->getManager();
+                $em = $this->doctrine->getManager();
                 $em->persist($dataSource);
                 $em->flush();
 
@@ -66,7 +68,6 @@ class DataSourcesController extends AbstractController
         }
 
 
-        dump($form);
         return $this->render('data_sources/form.html.twig', array(
             'form' => $form->createView(),
             'title' => $translator->trans('datasources.new'),
@@ -104,18 +105,14 @@ class DataSourcesController extends AbstractController
         return new Response('Connexion Reussi');
     }
 
-    /**
-     * @isGranted("ROLE_ADMIN")
-     */
-    public function confirmed(DataSource $dataSource)
+    #[IsGranted('ROLE_ADMIN')]
+    public function confirmed(#[MapEntity] DataSource $dataSource)
     {
         return $this->render('data_sources/confirmed.html.twig', array('dataSource' => $dataSource));
     }
 
-    /**
-     * @isGranted("ROLE_ADMIN")
-     */
-    public function edit(Request $request, TranslatorInterface $translator, DataSource $dataSource)
+    #[IsGranted('ROLE_ADMIN')]
+    public function edit(Request $request, TranslatorInterface $translator, #[MapEntity] DataSource $dataSource)
     {
         $dataSource->setLoginBDD(EncryptController::dechiffrer($dataSource->getLoginBDD()));
         $form = $this->createForm(DataSourceType::class, $dataSource);
@@ -134,7 +131,7 @@ class DataSourcesController extends AbstractController
                 $dataSource->setLoginBDD(EncryptController::chiffrer($dataSource->getLoginBDD()));
                 $dataSource->setPasswordBDD(EncryptController::chiffrer($dataSource->getPasswordBDD()));
 
-                $em = $this->getDoctrine()->getManager();
+                $em = $this->doctrine->getManager();
                 $em->flush();
 
                 return $this->redirect($this->generateUrl('data_sources_registration_confirmed', array('id' => $dataSource->getId())));
@@ -148,22 +145,18 @@ class DataSourcesController extends AbstractController
         ));
     }
 
-    /**
-     * @isGranted("ROLE_ADMIN")
-     */
-    public function delete(DataSource $dataSource)
+    #[IsGranted('ROLE_ADMIN')]
+    public function delete(#[MapEntity] DataSource $dataSource)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $em->remove($dataSource);
         $em->flush();
 
         return $this->redirect($this->generateUrl('data_sources_list'));
     }
 
-    /**
-     * @isGranted("ROLE_ADMIN")
-     */
-    public function show(DataSource $dataSource)
+    #[IsGranted('ROLE_ADMIN')]
+    public function show(#[MapEntity] DataSource $dataSource)
     {
         // On vérifie si la clé de chiffrement existe
         $keyExists = false;

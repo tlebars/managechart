@@ -2,13 +2,18 @@
 
 namespace App\Controller;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\DataSource;
 
 class EncryptController extends AbstractController
 {
+    public function __construct(private ManagerRegistry $doctrine)
+    {
+    }
+
     public static $keyFile = __DIR__ . '/../../Resources/privateKey/key.txt';
     public static $ivFile = __DIR__ . '/../../Resources/privateKey/iv.txt';
 
@@ -58,8 +63,8 @@ class EncryptController extends AbstractController
 
     /**
      * Rechiffre tous les identifiants et mots de passe en base de données
-     * @isGranted("ROLE_ADMIN")
      */
+    #[IsGranted('ROLE_ADMIN')]
     public function rechiffrerBDD()
     {
         // Si il existe déjà une clé privée, on en crée une nouvelle puis on rechiffre la base de données
@@ -71,8 +76,8 @@ class EncryptController extends AbstractController
             file_put_contents(self::$keyFile, base64_encode(openssl_random_pseudo_bytes(32)));
             file_put_contents(self::$ivFile, base64_encode(openssl_random_pseudo_bytes(16)));
 
-            $em = $this->getDoctrine()->getManager();
-            $repository = $this->getDoctrine()->getRepository(DataSource::class);
+            $em = $this->doctrine->getManager();
+            $repository = $this->doctrine->getRepository(DataSource::class);
             $listDataSources = $repository->findAll();
 
             foreach ($listDataSources as $dataSource)
