@@ -20,3 +20,10 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+###> docker / secrets ###
+/docker/.env
+/docker/secrets/*
+!/docker/secrets/.gitkeep
+/Resources/privateKey/*.txt
+###< docker / secrets ###
