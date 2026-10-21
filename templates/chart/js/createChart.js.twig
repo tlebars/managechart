@@ -85,8 +85,8 @@ var options = {
  				}
             }
 		},
-		{# necessite l'ajout de l'adresse du serveur distant iuem #}
-	    url:'/wapps/highcharts-export-web/'
+		fallbackToExportServer: false,
+		libURL: '{{ asset('js/Chart/lib') }}/'
 	},
 	navigator: {
         series: {

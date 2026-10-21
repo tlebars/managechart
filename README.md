@@ -115,3 +115,7 @@ $ php bin/console doctrine:migrations:migrate
 Remaining manual steps: review `composer recipes` (`composer recipes:update`) for any recipe you customised,
 and check that your database still validates with `doctrine:schema:validate` (ORM 3 / DBAL 4 may report
 type/default differences that need a migration).
+
+## Export des graphiques
+
+Les exports (PNG, JPG, PDF, SVG) sont générés dans le navigateur grâce au module Highcharts `offline-exporting` (v6.2.0, identique au cœur Highcharts). Aucun serveur d'export n'est nécessaire et aucune requête n'est envoyée à un service externe (`fallbackToExportServer: false`). Les bibliothèques nécessaires au PDF (`jspdf`, `svg2pdf`, `canvg`, `rgbcolor`) sont servies localement depuis `public/js/Chart/lib/`. L'export CSV/XLS est également généré côté navigateur (Blob).
