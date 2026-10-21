@@ -42,7 +42,7 @@
             {{ encore_entry_script_tags('chart') }}
         {% endblock %}
 
-        {% if chart.exportPrintChart == true %}<script src="{{ asset('js/Chart/exporting.js') }}"></script>{% endif %}
+        {% if chart.exportPrintChart == true %}<script src="{{ asset('js/Chart/exporting.js') }}"></script><script src="{{ asset('js/Chart/offline-exporting.js') }}"></script>{% endif %}
         {% if chart.exportCSVChart == true %}<script src="{{ asset('js/Chart/export-csv.js') }}"></script>{% endif %}
 
         <script type="text/javascript">
@@ -113,7 +113,8 @@
                                 }
                             }
                         },
-                        url: '/wapps/highcharts-export-web/',
+                        fallbackToExportServer: false,
+                        libURL: '{{ asset('js/Chart/lib') }}/',
                     },
                     navigator: {
                         series: { 

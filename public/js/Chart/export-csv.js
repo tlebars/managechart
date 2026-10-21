@@ -210,9 +210,7 @@
     function getContent(chart, href, extension, content, MIME) {
         var a,
             blobObject,
-            name,
-            options = (chart.options.exporting || {}).csv || {},
-            url = options.url || 'http://www.highcharts.com/studies/csv-export/download.php';
+            name;
 
         if (chart.options.exporting.filename) {
             name = chart.options.exporting.filename;
@@ -239,12 +237,13 @@
             a.remove();
 
         } else {
-            // Fall back to server side handling
-            Highcharts.post(url, {
-                data: content,
-                type: MIME,
-                extension: extension
-            });
+            blobObject = new Blob([content], {type: MIME + ';charset=utf-8'});
+            a = document.createElement('a');
+            a.href = URL.createObjectURL(blobObject);
+            a.download = name + '.' + extension;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
         }
     }
 
