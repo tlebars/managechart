@@ -5,70 +5,41 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
-use app\ChromePhp;
 
-/**
- * DataList
- *
- * @ORM\Table(name="data_list")
- * @ORM\Entity(repositoryClass="App\Repository\DataListRepository")
- */
+#[ORM\Table(name: 'data_list')]
+#[ORM\Entity(repositoryClass: \App\Repository\DataListRepository::class)]
 
 class DataList
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nameData", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'nameData', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $nameData;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="dateData", type="datetime")
-     * @Assert\Type("\DateTimeInterface")
-     */
+    #[ORM\Column(name: 'dateData', type: 'datetime')]
+    #[Assert\Type('\DateTimeInterface')]
     private $dateData;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="requestData", type="text")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'requestData', type: 'text')]
+    #[Assert\NotBlank()]
     private $requestData;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\DataSource")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank()
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\DataSource::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank()]
     private $dataSource;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Series", mappedBy="dataList", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToMany(targetEntity: \App\Entity\Series::class, mappedBy: 'dataList', cascade: ['persist', 'remove'])]
     private $series;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Flag", mappedBy="dataList", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToMany(targetEntity: \App\Entity\Flag::class, mappedBy: 'dataList', cascade: ['persist', 'remove'])]
     private $flag;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\AttributSpatial", mappedBy="dataList", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToMany(targetEntity: \App\Entity\AttributSpatial::class, mappedBy: 'dataList', cascade: ['persist', 'remove'])]
     private $attributsSpatiaux;
 
     /**

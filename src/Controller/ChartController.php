@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\Chart;
 use App\Entity\DataList;
 use App\Entity\YAxis;
@@ -15,7 +17,7 @@ use App\Chart\AvailableChoice\AvailableColorSerie;
 use App\Chart\AvailableChoice\AvailableTypeSerie;
 use App\Chart\AvailableChoice\AvailableTypeAxis;
 use App\Chart\AvailableChoice\AvailableDashStyleSerie;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class ChartController extends AbstractController
 {
@@ -23,7 +25,7 @@ class ChartController extends AbstractController
 
     private $translator;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, private ManagerRegistry $doctrine)
     {
         $this->translator = $translator;
     }
@@ -63,12 +65,10 @@ class ChartController extends AbstractController
         return $repository->findBy([], ["nameData" => "ASC"]);
     }
 
-    /**
-     * @Route("/")
-     */
+    #[Route('/')]
     public function index()
     {
-        $repository = $this->getDoctrine()->getRepository(Chart::class);
+        $repository = $this->doctrine->getRepository(Chart::class);
         $list_chart = $repository->findAll();
 
         return $this->render('chart/index.html.twig', array('list_chart' => $list_chart));
@@ -76,8 +76,8 @@ class ChartController extends AbstractController
 
     /**
      * Prépare le formulaire de création d'un graphique
-     * @isGranted("ROLE_SCIENTIFIC")
      */
+    #[IsGranted('ROLE_SCIENTIFIC')]
     public function create(Request $request, $typeChart)
     {
         $chart = new Chart();
@@ -99,7 +99,7 @@ class ChartController extends AbstractController
         }
 
         /* Initialisation des varibles twig */
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
         $varTwig = self::initializeVarTwig($em);
         $varTwig['form'] = $form->createView();
 
@@ -108,11 +108,11 @@ class ChartController extends AbstractController
 
     /**
      * Prépare le formulaire d'édition d'un graphique
-     * @isGranted("ROLE_SCIENTIFIC")
      */
+    #[IsGranted('ROLE_SCIENTIFIC')]
     protected function edit(Request $request, $chart)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $listYAxis = $chart->getListYAxis()->toArray();
 
@@ -153,7 +153,7 @@ class ChartController extends AbstractController
      */
     protected function register($chart, $edit)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
             // On enregistre le graphique
             if (!$edit) {
@@ -182,7 +182,7 @@ class ChartController extends AbstractController
     /**
      * Retourne la dataList au format JSON
      */
-    public function getDataParameterDataList(DataList $dataList, $attributsSpatiaux, $editCreate)
+    public function getDataParameterDataList(#[MapEntity] DataList $dataList, $attributsSpatiaux, $editCreate)
     {
         if (!$attributsSpatiaux) {
             $dataList->executeQuery("default", false, false);
@@ -250,20 +250,16 @@ class ChartController extends AbstractController
         return $response;
     }
 
-    /**
-     * @isGranted("ROLE_SCIENTIFIC")
-     */
-    public function confirmed(Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC')]
+    public function confirmed(#[MapEntity] Chart $chart)
     {
         return $this->render('chart/confirmed.html.twig', array('chart' => $chart));
     }
 
-    /**
-     * @isGranted("ROLE_SCIENTIFIC")
-     */
-    public function duplicate(Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC')]
+    public function duplicate(#[MapEntity] Chart $chart)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         // Duplication du graphique
         $duplicatedChart = clone $chart;
@@ -295,12 +291,12 @@ class ChartController extends AbstractController
         return $this->redirectToRoute('index');
     }
 
-    public function show(Chart $chart)
+    public function show(#[MapEntity] Chart $chart)
     {
         return $this->render('chart/show.html.twig', array('chart' => $chart));
     }
 
-    public function showIframe(Request $request, Chart $chart, $width, $height, $attributsSpatiaux, $test)
+    public function showIframe(Request $request, #[MapEntity] Chart $chart, $width, $height, $attributsSpatiaux, $test)
     {
         return $this->render('chart/showIframe.html.twig', array(
             'chart' => $chart,
@@ -316,12 +312,10 @@ class ChartController extends AbstractController
         ));
     }
 
-    /**
-     * @isGranted("ROLE_SCIENTIFIC_PLUS")
-     */
-    public function delete(Request $request, Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC_PLUS')]
+    public function delete(Request $request, #[MapEntity] Chart $chart)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->doctrine->getManager();
 
         $em->remove($chart);
         $em->flush();
@@ -333,8 +327,8 @@ class ChartController extends AbstractController
 
     /**
      * Création d'un graphique simple
-     * @isGranted("ROLE_SCIENTIFIC")
      */
+    #[IsGranted('ROLE_SCIENTIFIC')]
     public function newSimplechart(Request $request)
     {
         $returnCreate = $this->create($request, 'simplechart');
@@ -348,9 +342,9 @@ class ChartController extends AbstractController
 
     /**
      * Modification d'un graphique simple
-     * @isGranted("ROLE_SCIENTIFIC")
      */
-    public function editSimplechart(Request $request, Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC')]
+    public function editSimplechart(Request $request, #[MapEntity] Chart $chart)
     {
         $returnEdit = $this->edit($request, $chart);
 
@@ -365,8 +359,8 @@ class ChartController extends AbstractController
 
     /**
      * Création d'un graphique temporel
-     * @isGranted("ROLE_SCIENTIFIC")
      */
+    #[IsGranted('ROLE_SCIENTIFIC')]
     public function newTimechart(Request $request)
     {
         $returnCreate = $this->create($request, 'timechart');
@@ -380,9 +374,9 @@ class ChartController extends AbstractController
 
     /**
      * Modification d'un graphique temporel
-     * @isGranted("ROLE_SCIENTIFIC")
      */
-    public function editTimechart(Request $request, Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC')]
+    public function editTimechart(Request $request, #[MapEntity] Chart $chart)
     {
         $returnEdit = $this->edit($request, $chart);
 
@@ -397,8 +391,8 @@ class ChartController extends AbstractController
 
     /**
      * Création d'un graphique temporel multi-axes
-     * @isGranted("ROLE_SCIENTIFIC")
      */
+    #[IsGranted('ROLE_SCIENTIFIC')]
     public function newMultiaxistimechart(Request $request)
     {
         $returnCreate = $this->create($request, 'multiaxistimechart');
@@ -412,9 +406,9 @@ class ChartController extends AbstractController
 
     /**
      * Modification d'un graphique temporel multi-axes
-     * @isGranted("ROLE_SCIENTIFIC")
      */
-    public function editMultiaxistimechart(Request $request, Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC')]
+    public function editMultiaxistimechart(Request $request, #[MapEntity] Chart $chart)
     {
         $returnEdit = $this->edit($request, $chart);
 
@@ -429,8 +423,8 @@ class ChartController extends AbstractController
 
     /**
      * Création d'un graphique circulaire
-     * @isGranted("ROLE_SCIENTIFIC")
      */
+    #[IsGranted('ROLE_SCIENTIFIC')]
     public function newPiechart(Request $request)
     {
         $returnCreate = $this->create($request, 'piechart');
@@ -444,9 +438,9 @@ class ChartController extends AbstractController
 
     /**
      * Modification d'un graphique circulaire
-     * @isGranted("ROLE_SCIENTIFIC")
      */
-    public function editPiechart(Request $request, Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC')]
+    public function editPiechart(Request $request, #[MapEntity] Chart $chart)
     {
         $returnEdit = $this->edit($request, $chart);
 
@@ -461,8 +455,8 @@ class ChartController extends AbstractController
 
     /**
      * Création d'un graphique dynamique
-     * @isGranted("ROLE_SCIENTIFIC")
      */
+    #[IsGranted('ROLE_SCIENTIFIC')]
     public function newDynamicchart(Request $request)
     {
         $returnCreate = $this->create($request, 'dynamicchart');
@@ -476,9 +470,9 @@ class ChartController extends AbstractController
 
     /**
      * Modification d'un graphique dynamique
-     * @isGranted("ROLE_SCIENTIFIC")
      */
-    public function editDynamicchart(Request $request, Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC')]
+    public function editDynamicchart(Request $request, #[MapEntity] Chart $chart)
     {
         $returnEdit = $this->edit($request, $chart);
 
@@ -493,8 +487,8 @@ class ChartController extends AbstractController
 
     /**
      * Création d'un graphique polar et spiderweb
-     * @isGranted("ROLE_SCIENTIFIC")
      */
+    #[IsGranted('ROLE_SCIENTIFIC')]
     public function newPolarchart(Request $request)
     {
         $returnCreate = $this->create($request, 'polarchart');
@@ -508,9 +502,9 @@ class ChartController extends AbstractController
 
     /**
      * Modification d'un graphique polar et spiderweb
-     * @isGranted("ROLE_SCIENTIFIC")
      */
-    public function editPolarchart(Request $request, Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC')]
+    public function editPolarchart(Request $request, #[MapEntity] Chart $chart)
     {
         $returnEdit = $this->edit($request, $chart);
 
@@ -525,8 +519,8 @@ class ChartController extends AbstractController
 
     /**
      * Création d'un graphique heatmap
-     * @isGranted("ROLE_SCIENTIFIC")
      */
+    #[IsGranted('ROLE_SCIENTIFIC')]
     public function newHeatmapchart(Request $request)
     {
         $returnCreate = $this->create($request, 'heatmapchart');
@@ -540,9 +534,9 @@ class ChartController extends AbstractController
 
     /**
      * Modification d'un graphique heatmap
-     * @isGranted("ROLE_SCIENTIFIC")
      */
-    public function editHeatmapchart(Request $request, Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC')]
+    public function editHeatmapchart(Request $request, #[MapEntity] Chart $chart)
     {
         $returnEdit = $this->edit($request, $chart);
 
@@ -557,8 +551,8 @@ class ChartController extends AbstractController
 
     /**
      * Création d'un graphique dynamique temporel
-     * @isGranted("ROLE_SCIENTIFIC")
      */
+    #[IsGranted('ROLE_SCIENTIFIC')]
     public function newTimedynamicchart(Request $request)
     {
         $returnCreate = $this->create($request, 'timedynamicchart');
@@ -572,9 +566,9 @@ class ChartController extends AbstractController
 
     /**
      * Modification d'un graphique dynamique temporel
-     * @isGranted("ROLE_SCIENTIFIC")
      */
-    public function editTimedynamicchart(Request $request, Chart $chart)
+    #[IsGranted('ROLE_SCIENTIFIC')]
+    public function editTimedynamicchart(Request $request, #[MapEntity] Chart $chart)
     {
         $returnEdit = $this->edit($request, $chart);
 

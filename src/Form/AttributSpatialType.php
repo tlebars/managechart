@@ -15,7 +15,7 @@ class AttributSpatialType extends AbstractType
 	 * @param FormBuilderInterface $builder
      * @param array $options
      */
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		$builder
 			->add('nameAttribut',		TextType::class,				array(
 				'label' => 'formAttributes.name'
@@ -36,14 +36,14 @@ class AttributSpatialType extends AbstractType
 	/**
      * @param OptionsResolver $resolver
      */
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver): void {
         $resolver->setDefaults(array('data_class' => AttributSpatial::class));
     }
 
     /**
      * @return string
      */
-    public function getBlockPrefix() {
+    public function getBlockPrefix(): string {
         return 'mc_datalistbundle_attributspatial';
     }
 }

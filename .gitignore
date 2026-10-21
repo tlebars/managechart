@@ -9,10 +9,10 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
+###> phpunit/phpunit ###
 /phpunit.xml
-###< symfony/phpunit-bridge ###
+/.phpunit.cache/
+###< phpunit/phpunit ###
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/

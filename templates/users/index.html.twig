@@ -13,7 +13,7 @@
    		</h1>
 	</header>
 
-	{% for flashMessage in app.session.flashbag.get('deleteItSelf') %}
+	{% for flashMessage in app.flashes('deleteItSelf') %}
 		<section>
 			<div class="flash-notice">
     			{{ flashMessage }}

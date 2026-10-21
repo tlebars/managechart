@@ -2,25 +2,33 @@
 
 namespace App\Controller;
 
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\User;
 use App\Form\User\AdminEditFormType;
 use App\Form\User\RegistrationFormType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserController extends AbstractController
 {
+    public function __construct(private ManagerRegistry $doctrine)
+    {
+    }
+
     /**
      * Affiche l'utilisateur
-     * @isGranted("IS_AUTHENTICATED_REMEMBERED")
      */
-    public function show(User $user)
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
+    public function show(#[MapEntity] User $user)
     {
         /* Si l'utilisateur n'est pas admin, affiche son profile */
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') && $user->getId() != $this->getUser()->getId()) {
+        if (!$this->isGranted('ROLE_ADMIN') && $user->getId() != $this->getUser()->getId()) {
             throw new AccessDeniedHttpException("Accès interdit");
         } else {
             return $this->render('users/show.html.twig', array('user' => $user));
@@ -29,11 +37,11 @@ class UserController extends AbstractController
 
     /**
      * Affiche la liste des utilisateurs
-     * @isGranted("ROLE_ADMIN")
      */
+    #[IsGranted('ROLE_ADMIN')]
     public function index()
     {
-        $repository = $this->getDoctrine()->getRepository(User::class);
+        $repository = $this->doctrine->getRepository(User::class);
         $users = $repository->findAll();
 
         return $this->render('users/index.html.twig', array('listUsers' => $users));
@@ -41,18 +49,18 @@ class UserController extends AbstractController
 
     /**
     * Création d'utilisateurs
-    * @isGranted("ROLE_ADMIN")
-    */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+     */
+    #[IsGranted('ROLE_ADMIN')]
+    public function register(Request $request, UserPasswordHasherInterface $passwordHasher)
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
+            $password = $passwordHasher->hashPassword($user, $user->getPlainPassword());
             $user->setPassword($password);
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
             $em->persist($user);
             $em->flush();
 
@@ -67,15 +75,15 @@ class UserController extends AbstractController
 
     /**
     * Edition d'utilisateurs
-    * @isGranted("ROLE_ADMIN")
-    */
-    public function edit(User $user, Request $request)
+     */
+    #[IsGranted('ROLE_ADMIN')]
+    public function edit(#[MapEntity] User $user, Request $request)
     {
         $form = $this->createForm(AdminEditFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
             $em->persist($user);
             $em->flush();
 
@@ -90,18 +98,17 @@ class UserController extends AbstractController
 
     /**
      * Suppression d'utilisateurs
-     * @isGranted("IS_AUTHENTICATED_REMEMBERED")
      */
-    public function delete(User $user)
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
+    public function delete(#[MapEntity] User $user, TranslatorInterface $translator, Request $request): Response
     {
         /* l'utilisateur ne peut pas supprimer son compte */
         if ($user === $this->getUser()) {
-            $translator = $this->get('translator');
             $msgError = $translator->trans('userlistcontroller.deleteitself.msgError');
 
-            $this->get('session')->getFlashBag()->add('deleteItSelf', $msgError);
+            $request->getSession()->getFlashBag()->add('deleteItSelf', $msgError);
         } else {
-            $em = $this->getDoctrine()->getManager();
+            $em = $this->doctrine->getManager();
             $em->remove($user);
             $em->flush();
         }

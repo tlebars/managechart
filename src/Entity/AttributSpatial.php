@@ -5,59 +5,33 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * AttributSpatial
- *
- * @ORM\Table(name="attribut_spatial")
- * @ORM\Entity(repositoryClass="App\Repository\AttributSpatialRepository")
- */
+#[ORM\Table(name: 'attribut_spatial')]
+#[ORM\Entity(repositoryClass: \App\Repository\AttributSpatialRepository::class)]
 class AttributSpatial
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nameAttribut", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'nameAttribut', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $nameAttribut;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="valueAttribut", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'valueAttribut', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $valueAttribut;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="keywordAttribut", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'keywordAttribut', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $keywordAttribut;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="typeAttribut", type="string", length=255)
-     */
+    #[ORM\Column(name: 'typeAttribut', type: 'string', length: 255)]
     private $typeAttribut;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\DataList", inversedBy="attributsSpatiaux")
-     * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank()
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\DataList::class, inversedBy: 'attributsSpatiaux')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank()]
     private $dataList;
 
 

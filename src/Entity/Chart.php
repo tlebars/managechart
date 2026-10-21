@@ -5,165 +5,83 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Chart
- *
- * @ORM\Table(name="chart")
- * @ORM\Entity(repositoryClass="App\Repository\ChartRepository")
- */
+#[ORM\Table(name: 'chart')]
+#[ORM\Entity(repositoryClass: \App\Repository\ChartRepository::class)]
 class Chart
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nameChart", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'nameChart', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $nameChart;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="titleChart", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'titleChart', type: 'string', length: 255, nullable: true)]
     private $titleChart;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="subtitleChart", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'subtitleChart', type: 'string', length: 255, nullable: true)]
     private $subtitleChart;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="legendChart", type="boolean")
-     */
+    #[ORM\Column(name: 'legendChart', type: 'boolean')]
     private $legendChart;
     
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="tooltipChart", type="boolean", options={"default" : true})
-     */
+    #[ORM\Column(name: 'tooltipChart', type: 'boolean', options: ['default' => true])]
     private $tooltipChart;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="creditsChart", type="text")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'creditsChart', type: 'text')]
+    #[Assert\NotBlank()]
     private $creditsChart;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="urlcreditsChart", type="text", nullable=true)
-     */
+    #[ORM\Column(name: 'urlcreditsChart', type: 'text', nullable: true)]
     private $urlcreditsChart;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="typeChart", type="text")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'typeChart', type: 'text')]
+    #[Assert\NotBlank()]
     private $typeChart;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="xAxisTitle", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'xAxisTitle', type: 'string', length: 255, nullable: true)]
     private $xAxisTitle;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="xAxisUnit", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'xAxisUnit', type: 'string', length: 255, nullable: true)]
     private $xAxisUnit;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="xAxisType", type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(name: 'xAxisType', type: 'string', length: 255)]
+    #[Assert\NotBlank()]
     private $xAxisType;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="invertedChart", type="boolean", nullable=true)
-     */
+    #[ORM\Column(name: 'invertedChart', type: 'boolean', nullable: true)]
     private $invertedChart;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="gapSizeChart", type="integer")
-     * @Assert\NotBlank()
-     * @Assert\GreaterThanOrEqual(0)
-     */
+    #[ORM\Column(name: 'gapSizeChart', type: 'integer')]
+    #[Assert\NotBlank()]
+    #[Assert\GreaterThanOrEqual(0)]
     private $gapSizeChart;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="polarType", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: 'polarType', type: 'string', length: 255, nullable: true)]
     private $polarType;
 
 
 
-     /**
-     * @var string
-     *
-     * @ORM\Column(name="pieType", type="string", length=255, nullable=true)
-     */
+     #[ORM\Column(name: 'pieType', type: 'string', length: 255, nullable: true)]
 
 
     private $pieType;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="typestacked", type="string", length=255 , nullable=true)
-     */
+    #[ORM\Column(name: 'typestacked', type: 'string', length: 255 , nullable: true)]
 
     private $typestacked;
 
 
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="exportPrintChart", type="boolean")
-     */
+    #[ORM\Column(name: 'exportPrintChart', type: 'boolean')]
     private $exportPrintChart;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="exportCSVChart", type="boolean")
-     */
+    #[ORM\Column(name: 'exportCSVChart', type: 'boolean')]
     private $exportCSVChart;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\YAxis", mappedBy="chart", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToMany(targetEntity: \App\Entity\YAxis::class, mappedBy: 'chart', cascade: ['persist', 'remove'])]
     private $list_yAxis;
    
 
