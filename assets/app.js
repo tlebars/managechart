@@ -25,7 +25,7 @@ import 'bootstrap';
 import './js/navColor.js';
 const toastr = require('./js/toastr.min.js');
 global.toastr = toastr;
-import './js/widearea.min.js';
+import '../public/js/widearea.min.js';
 import './js/jquery.dataTables.min.js';
 import './js/dataTables.bootstrap.min.js';
 import './js/jquery.mousewheel.min.js';

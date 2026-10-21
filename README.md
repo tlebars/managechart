@@ -37,60 +37,46 @@ name color guide : [https://htmlcolorcodes.com/fr/noms-de-couleur/](https://html
 
 Exemple : [https://managechart.univ-brest.fr/en/chart/show/291/800/auto/2?background=LightYellow](https://managechart.univ-brest.fr/en/chart/show/291/800/auto/2?background=LightYellow)
 
-# Installation
+# Installation (Docker)
 
-## NEW ! Docker install
+## Requirements
 
-https://gitlab.in2p3.fr/Mathias.Rouan/docker-managechart
+- Docker with the Compose plugin
+- A reverse proxy (nginx, Traefik, Apache...) terminating TLS in front of the container
+- Your `iv.txt` and `key.txt` encryption files (used to encrypt the data-source credentials stored in the database)
 
-## Manual install
-## Pre-requisites
-
-- PHP >= 8.2 (compatible with PHP 8.5), with the `ctype`, `iconv` extensions and the extension matching your database (`pdo_pgsql`/`pgsql` or `pdo_mysql`/`mysqli`)
-- Node.js >= 22 (Node 24 LTS recommended) and npm. No `NODE_OPTIONS=--openssl-legacy-provider` is needed
-- [composer](https://getcomposer.org/download/)
-- the [symfony cli](https://symfony.com/download)
-
-## Installing PHP dependencies
+## Deploy
 
 ```
-$ composer install
+cp docker/.env.example docker/.env        # then edit docker/.env (APP_SECRET, POSTGRES_*, MAILER_*, TRUSTED_PROXIES)
+cp /path/to/iv.txt /path/to/key.txt docker/secrets/
+docker compose -f docker/compose.yaml --env-file docker/.env up -d --build
 ```
 
-## Installing javascript dependencies
+`docker/.env` and `docker/secrets/*` are git-ignored; never commit them. The application listens on `127.0.0.1:84` (container port 8080).
+
+Run the database migrations:
 
 ```
-$ npm install
+docker compose -f docker/compose.yaml exec managechart php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-## Creating javascript bundles
-
-For development run
+For development (`APP_ENV=dev`, PostgreSQL published on `127.0.0.1:5432`), add the override file:
 
 ```
-$ npm run dev
+docker compose -f docker/compose.yaml -f docker/compose.override.yaml --env-file docker/.env up -d --build
 ```
 
-For production run
+## Reverse proxy
 
-```
-$ npm run build
-```
+- Forward requests to `127.0.0.1:84` and send the `X-Forwarded-For`, `X-Forwarded-Host`, `X-Forwarded-Proto`, `X-Forwarded-Port` (and `X-Forwarded-Prefix` if served under a sub-path) headers.
+- Set `TRUSTED_PROXIES` in `docker/.env` to the IP(s)/CIDR(s) of the proxy as seen by the container (comma-separated), otherwise these headers are ignored.
+- Charts are meant to be embedded in iframes on third-party sites: do **not** add `X-Frame-Options` or a CSP `frame-ancestors` restriction in the proxy.
 
-## Setting up the database
+## Backups
 
-The default database configuration can be found in the `.env` file, under the
-`DATABASE_URL` variable.
-
-Migration
-```
-php bin/console doctrine:migrations:migrate
-```
-## Launching a local server for development
-
-```
-$ symfony server:start
-```
+- Database: `docker compose -f docker/compose.yaml exec db pg_dump -U <POSTGRES_USER> <POSTGRES_DB> > backup.sql`
+- `docker/secrets/iv.txt` and `docker/secrets/key.txt`: keep a copy outside the server. If they are lost, the stored data-source credentials become unreadable.
 
 # Upgrade notes (Symfony 7.4 LTS / PHP 8.5)
 

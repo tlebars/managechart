@@ -10,14 +10,14 @@ const Cookies = require('./js/js.cookie.js');
 global.Cookies = Cookies;
 import 'bootstrap/dist/js/bootstrap.min.js';
 import './js/navColor.js';
-import './js/Chart/color.js'
-const Highcharts = require('./js/Chart/highstock.js');
-import HighchartsMore from './js/Chart/highcharts-more.js';
+import '../public/js/Chart/color.js'
+const Highcharts = require('../public/js/Chart/highstock.js');
+import HighchartsMore from '../public/js/Chart/highcharts-more.js';
 HighchartsMore(Highcharts);
-import Heatmap from './js/Chart/heatmap.js';
+import Heatmap from '../public/js/Chart/heatmap.js';
 Heatmap(Highcharts);
 global.Highcharts = Highcharts;
 import { colorJet, getLimitValues } from './js/Chart/heatmapscript.js';
 global.colorJet = colorJet;
 global.getLimitValues = getLimitValues;
-import './js/Chart/heatmap.js';
+import '../public/js/Chart/heatmap.js';
